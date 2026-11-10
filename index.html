@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Julian Müller | Generative Modelling &amp; Statistical Machine Learning</title>
+  <meta name="description" content="Julian Müller — Oxford MSc Statistical Science graduate. Research in flow matching, diffusion models, learning from imperfect observations, and molecular modelling.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#about">Skip to content</a>
+  <div class="page">
+    <header>
+      <a class="site-name" href="#about">Julian Müller</a>
+      <nav aria-label="Main navigation">
+        <a href="#about">About</a>
+        <a href="#research">Research</a>
+        <a href="#background">Background</a>
+        <a href="assets/documents/julian-mueller-cv.pdf">CV <span class="file-type">(PDF)</span></a>
+      </nav>
+    </header>
+    <main>
+      <section id="about" class="introduction" aria-labelledby="name">
+        <div class="bio">
+          <h1 id="name">Julian Müller</h1>
+          <p>I work on generative models and statistical machine learning. I recently completed an MSc in Statistical Science at the University of Oxford (top 10% of my cohort). Previously, I completed a BSc in Economics at the University of Mannheim (top 0.3% of graduates across three cohorts), focusing on statistics and econometrics.</p>
+          <p>At Oxford, I developed <a href="#sigmaflow">SigmaFlow</a>, a flow-matching approach to protein–ligand docking, supervised by Prof. Garrett M. Morris in the Oxford Protein Informatics Group. I continue this work through an independent research collaboration.</p>
+          <p>I am currently a Quantitative Research Intern at ansa capital management, working on machine learning and generative models for implied-volatility surfaces.</p>
+          <p class="application-note">I am applying to PhD programmes starting in Fall 2027.</p>
+          <p class="contact-links"><a href="mailto:julian.mueller5353@gmail.com">Email</a><span aria-hidden="true"> · </span><a href="https://github.com/jmuelleo">GitHub</a><span aria-hidden="true"> · </span><a href="https://www.linkedin.com/in/julian-herbert-mueller/">LinkedIn</a><span aria-hidden="true"> · </span><a href="assets/documents/julian-mueller-cv.pdf">Academic CV (PDF)</a></p>
+        </div>
+        <img class="portrait" src="assets/portrait.jpg" width="1190" height="1785" alt="Julian Müller in Oxford academic dress" fetchpriority="high">
+      </section>
+
+      <section id="research" aria-labelledby="research-heading">
+        <h2 id="research-heading">Research interests</h2>
+        <p>I am interested in how generative models can learn useful distributions from noisy, incomplete, or otherwise imperfect observations, and under what conditions the underlying distribution can be recovered. My focus is on flow matching and diffusion models, bringing together questions of statistical inference, geometry, and optimisation.</p>
+        <p>My second focus is reinforcement learning for flow-matching and diffusion models. I am interested in the variety of approaches to reward-based fine-tuning: how the choice of RL method affects optimisation, exploration, and the learned distribution; what makes a useful reward model; and whether insights transfer between RL-based fine-tuning of large language models and of flow-matching and diffusion models.</p>
+        <p>Longer term, I would like to build world models with diffusion and flow matching that predict future observations or states conditioned on actions and past experience, and investigate how RL agents can learn and plan within these simulated environments.</p>
+      </section>
+
+      <section aria-labelledby="projects-heading">
+        <h2 id="projects-heading">Selected research</h2>
+        <article id="sigmaflow" class="project">
+          <h3>SigmaFlow: Riemannian Flow Matching for Generative Protein–Ligand Docking</h3>
+          <p class="context">MSc dissertation · University of Oxford · 2026<br>Supervisor: Prof. Garrett M. Morris</p>
+          <p>Can a docking model use a fixed inference budget more effectively by generating more candidate poses with fewer integration steps? I developed a Riemannian flow-matching variant of SigmaDock, generating ligand poses conditioned on a protein binding pocket. The model uses geodesic training paths for translations and rotations of rigid molecular fragments.</p>
+          <p>I implemented and evaluated two model variants against a retrained diffusion baseline. The experiments study the trade-off between integration accuracy and candidate exploration, and show how pose diversity and selection between competing binding modes affect docking success.</p>
+          <p class="project-links"><a href="assets/documents/sigmaflow-msc-thesis.pdf">MSc thesis (PDF)</a><span aria-hidden="true"> · </span><a href="https://github.com/jmuelleo/SigmaFlow">Code</a></p>
+          <p class="follow-up">Ongoing: I am continuing development with Prof. Morris and preparing a manuscript based on the dissertation.</p>
+        </article>
+        <article id="msarm" class="project">
+          <h3>MSARM: Markov-Switching Autoregressive Models in R</h3>
+          <p class="context">BSc thesis · University of Mannheim · 2025<br>Supervisor: Dr. Ingo Steinke</p>
+          <p>How can we estimate autoregressive time series when an unobserved regime changes their dynamics? I derived EM estimating equations allowing user-specified switching in intercepts, individual lag coefficients, and innovation variance, and implemented them in an R package.</p>
+          <p>MSARM provides estimation with multiple initialisations, filtering and smoothing of regime probabilities, forecasting, and visualisation. I evaluated its estimation behaviour against MSwM across 288 simulated processes.</p>
+          <p class="project-links"><a href="assets/documents/msarm-bsc-thesis.pdf">BSc thesis (PDF)</a><span aria-hidden="true"> · </span><a href="https://github.com/jmuelleo/MSARM">Code</a></p>
+        </article>
+      </section>
+
+      <section id="background" aria-labelledby="background-heading">
+        <h2 id="background-heading">Education</h2>
+        <dl class="history">
+          <div><dt>2025–2026</dt><dd><strong>University of Oxford</strong><br>MSc Statistical Science · Distinction (77% overall), top 10% of the cohort.</dd></div>
+          <div><dt>2022–2025</dt><dd><strong>University of Mannheim</strong><br>BSc Economics · Grade 1.0, top 0.3% of graduates across three cohorts.<br>Focus on statistics, econometrics, and mathematical methods.</dd></div>
+        </dl>
+      </section>
+
+      <section id="experience" aria-labelledby="experience-heading">
+        <h2 id="experience-heading">Experience</h2>
+        <dl class="history">
+          <div><dt>2026–present</dt><dd><strong>ansa capital management</strong><br>Quantitative Research Intern · Generative models for implied-volatility surfaces.</dd></div>
+          <div><dt>2026–present</dt><dd><strong>Independent research collaboration</strong><br>With Prof. Garrett M. Morris, Oxford Protein Informatics Group · Molecular generation and protein–ligand docking.</dd></div>
+          <div><dt>2024–2025</dt><dd><strong>University of Mannheim</strong><br>Research assistant roles in Quantitative Economics (2024) and Empirical Economic Research (2025).</dd></div>
+          <div><dt>2023–2025</dt><dd><strong>University of Mannheim</strong><br>Teaching Assistant for Mathematics I (Analysis and Linear Algebra A), Statistics I, and Statistics II.</dd></div>
+        </dl>
+        <p>Further details, grades, and scholarships are in my <a href="assets/documents/julian-mueller-cv.pdf">academic CV (PDF)</a>.</p>
+      </section>
+
+      <section id="contact" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contact</h2>
+        <p>I welcome conversations about generative modelling and potential PhD research.<br><a href="mailto:julian.mueller5353@gmail.com">julian.mueller5353@gmail.com</a></p>
+      </section>
+    </main>
+    <footer>Julian Müller <span aria-hidden="true">·</span> Updated November 2026</footer>
+  </div>
+</body>
+</html>

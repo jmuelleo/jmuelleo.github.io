@@ -1,0 +1,7 @@
+qa/
+__pycache__/
+.DS_Store
+Thumbs.db
+*.log
+*.aux
+*.out

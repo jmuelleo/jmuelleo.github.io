@@ -1,14 +1,14 @@
-﻿"use strict";
+"use strict";
 
 const demos = window.msarmDemos;
 const byId = id => document.getElementById(id);
 const chart = byId("chart");
 const ctx = chart.getContext("2d");
 const slider = byId("inspect");
-const observed = "#c7d6ec";
-const blue = "#a6bfff";
-const mint = "#71ebcf";
-const orange = "#ffc18f";
+const observed = "#536170";
+const blue = "#527caa";
+const mint = "#235c95";
+const orange = "#a25424";
 let model = "level";
 let view = "smoothed";
 let sampleStep = 120;
@@ -42,7 +42,7 @@ function update() {
   byId("chart-title").textContent = views[view][0];
   byId("chart-description").textContent = views[view][1];
   const legend = forecasting
-    ? [["Observed", observed], ["Point forecast", mint], ["80% interval", "#497eab"], ["95% interval", "#314769"]]
+    ? [["Observed", observed], ["Point forecast", mint], ["80% interval", "#b4cce4"], ["95% interval", "#e2ecf6"]]
     : [["Observed", observed], ["Fitted", blue], ["Regime 1", mint], ["Regime 2", orange]];
   byId("legend").replaceChildren(...legend.map(([label, color]) => {
     const item = document.createElement("span");
@@ -112,12 +112,12 @@ function draw() {
     ctx.textAlign = "right";
     for (const tick of ticks) {
       const position = coordinate(tick);
-      ctx.strokeStyle = "#293951";
+      ctx.strokeStyle = "#e3e7eb";
       ctx.beginPath();
       ctx.moveTo(42, position);
       ctx.lineTo(w - 16, position);
       ctx.stroke();
-      ctx.fillStyle = "#aabbd0";
+      ctx.fillStyle = "#555f69";
       ctx.fillText(Number(tick.toFixed(1)), 35, position + 4);
     }
   }
@@ -146,8 +146,8 @@ function draw() {
 
   grid([minimum, (minimum + maximum) / 2, maximum], y);
   if (forecasting) {
-    band(data.bands[1], data.bands[4], "#314769");
-    band(data.bands[2], data.bands[3], "#497eab");
+    band(data.bands[1], data.bands[4], "#e2ecf6");
+    band(data.bands[2], data.bands[3], "#b4cce4");
     line(data.y.slice(start - 1), start, y, observed);
     line([data.y[n - 1], ...data.forecast], n, y, mint, 2);
   } else {
@@ -160,13 +160,13 @@ function draw() {
   }
   const cursor = forecasting ? n + horizon : sampleStep;
   ctx.setLineDash([4, 4]);
-  ctx.strokeStyle = "#8ca2ba";
+  ctx.strokeStyle = "#697a8b";
   ctx.beginPath();
   ctx.moveTo(x(cursor), top);
   ctx.lineTo(x(cursor), h - 34);
   ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = "#aabbd0";
+  ctx.fillStyle = "#555f69";
   const ticks = forecasting ? [start, n - 32, n, n + 12, end] : [1, 50, 100, 150, n];
   ticks.forEach((tick, i) => {
     ctx.textAlign = i === 0 ? "left" : i === ticks.length - 1 ? "right" : "center";

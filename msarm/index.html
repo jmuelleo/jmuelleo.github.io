@@ -5,37 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Explore regime inference and forecasting with MSARM, an R package for Gaussian Markov-switching autoregressions.">
   <title>MSARM · Markov-switching autoregressions in R</title>
+  <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="style.css">
   <script defer src="demo-data.js"></script>
   <script defer src="explorer.js"></script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
-<header class="wrap top">
-  <a class="wordmark" href="../">Julian Müller</a>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="page">
+<header>
+  <a class="site-name" href="../">Julian Müller</a>
   <nav aria-label="Page navigation"><a href="#explore">Explorer</a><a href="#method">Method</a><a href="#reference">R reference</a></nav>
 </header>
-<main id="main" class="wrap">
-  <section class="hero" aria-labelledby="title">
-    <div class="hero-copy">
-      <div class="eyebrow">R PACKAGE · 1.0.1</div>
-      <h1 id="title">MSARM<span>.</span></h1>
-      <p class="lead">Markov-switching autoregression</p>
-      <p>Fit time series whose level, dynamics or volatility change with a latent regime. Choose which parameters can switch, infer regime probabilities, and forecast with bootstrap prediction intervals.</p>
-      <div class="actions"><a class="button primary" href="#explore">Explore the model</a><a class="button" href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1">Source code</a></div>
+<main id="main">
+  <section class="project-intro" aria-labelledby="title">
+    <p class="context">Research software &middot; R package &middot; Version 1.0.1</p>
+    <h1 id="title">MSARM: Markov-Switching Autoregressive Models</h1>
+    <p>MSARM fits Gaussian autoregressions for time series whose level, dynamics or volatility change with a latent regime. The package estimates regime probabilities and forecasts future observations with bootstrap prediction intervals.</p>
+    <p class="project-links"><a href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1">Source code</a><span aria-hidden="true"> &middot; </span><a href="../assets/documents/msarm-bsc-thesis.pdf">BSc thesis (PDF)</a><span aria-hidden="true"> &middot; </span><a href="https://github.com/jmuelleo/MSARM/blob/msarm-1.0.1/benchmarks/README.md">Benchmark</a></p>
+    <div class="model-card">
+      <h2>Model specification</h2>
+      <p class="equation">y<sub>t</sub> = c<sub>s<sub>t</sub></sub> + &sum; &phi;<sub>k,s<sub>t</sub></sub> y<sub>t&minus;k</sub> + &sigma;<sub>s<sub>t</sub></sub> &epsilon;<sub>t</sub></p>
+      <p>A hidden Markov chain determines the active regime. The intercept <var>c</var>, each lag coefficient <var>&phi;</var> and the innovation variance <var>&sigma;&sup2;</var> can vary independently.</p>
     </div>
-    <aside class="model-card" aria-label="Model equation">
-      <div class="eyebrow">GAUSSIAN SWITCHING AR</div>
-      <p class="equation">y<sub>t</sub> = c<sub>sₜ</sub> + Σ φ<sub>k,sₜ</sub> y<sub>t−k</sub> + σ<sub>sₜ</sub> ε<sub>t</sub></p>
-      <p>A hidden Markov chain determines the active regime. The intercept, each lag coefficient and the innovation variance can vary independently.</p>
-      <div class="key"><span>c</span> Level <span>φ</span> Dynamics <span>σ²</span> Variance</div>
-    </aside>
   </section>
 
   <section id="explore" aria-labelledby="explore-title">
     <h2 id="explore-title">Regime explorer</h2>
     <p class="intro">Compare three synthetic AR(1) series with two regimes. Each example was fitted with MSARM 1.0.1 in R. The browser displays the stored results.</p>
-    <div class="lab">
+    <figure class="lab" aria-labelledby="chart-title">
       <div class="control-row">
         <fieldset><legend>Switching parameters</legend><div class="seg">
           <button type="button" data-model="level" aria-pressed="true">Intercept</button>
@@ -61,8 +59,8 @@
         <div><h3>Transition probabilities</h3><table><thead><tr><th scope="col">To / from</th><th scope="col">Regime 1</th><th scope="col">Regime 2</th></tr></thead><tbody id="transition"></tbody></table></div>
       </div>
       <dl id="metrics" class="metrics"></dl>
-      <p class="note">Regime numbers are arbitrary and can refer to different fitted states across examples.</p>
-    </div>
+      <figcaption class="note context">Regime numbers are arbitrary and can refer to different fitted states across examples.</figcaption>
+    </figure>
   </section>
 
   <section id="method" aria-labelledby="method-title">
@@ -101,6 +99,7 @@ MSARM.plot(pred, conf = TRUE)</code></pre></div>
     <div class="resources"><a href="../assets/documents/msarm-bsc-thesis.pdf">BSc thesis and derivations (PDF)</a><a href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1/man">Full R reference</a><a href="https://github.com/jmuelleo/MSARM/blob/msarm-1.0.1/benchmarks/README.md">Reproducible MSwM comparison</a></div>
   </section>
 </main>
-<footer class="wrap"><a href="../">Julian Müller</a><span>MSARM · Version 1.0.1 submitted to CRAN</span></footer>
+<footer><a href="../">Julian Müller</a><span>MSARM · Version 1.0.1 submitted to CRAN</span></footer>
+</div>
 </body>
 </html>

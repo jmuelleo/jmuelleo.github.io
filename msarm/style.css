@@ -58,3 +58,8 @@ summary { cursor: pointer; font-weight: 600; }
   .lab { padding: 12px; }
   canvas { height: 280px; }
 }
+.benchmark-table { margin: 0 0 10px; }
+.benchmark-table caption { text-align: left; padding-bottom: 4px; font-weight: 600; }
+.benchmark-table td { white-space: nowrap; }
+.comparison { margin: 0 0 16px; }
+#comparison-chart { height: 142px; margin-bottom: 10px; }

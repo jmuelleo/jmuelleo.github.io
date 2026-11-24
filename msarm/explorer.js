@@ -21,13 +21,13 @@ const views = {
 };
 
 function table(id, rows) {
-  byId(id).replaceChildren(...rows.map((row, index) => {
+  byId(id).replaceChildren(...rows.map(([name, truth, estimate]) => {
     const tr = document.createElement("tr");
     const label = document.createElement("th");
     label.scope = "row";
-    label.textContent = `Regime ${index + 1}`;
+    label.textContent = name;
     tr.append(label);
-    for (const value of row) {
+    for (const value of [truth, estimate]) {
       const cell = document.createElement("td");
       cell.textContent = value.toFixed(3);
       tr.append(cell);
@@ -54,14 +54,24 @@ function update() {
   slider.max = forecasting ? data.forecast.length : data.y.length;
   slider.value = forecasting ? horizon : sampleStep;
   slider.labels[0].firstChild.textContent = forecasting ? "Forecast horizon " : "Observation ";
-  table("parameters", data.parameters);
-  table("transition", data.transition);
-  byId("metrics").replaceChildren(...["Log-likelihood", "RSS", "RCM", "Entropy"].map((name, i) => {
+  const parameterNames = ["Intercept", "AR(1)", "Variance"];
+  table("parameters", data.parameters.flatMap((row, regime) =>
+    row.map((estimate, column) => [
+      `R${regime + 1} ${parameterNames[column]}`, data.trueParameters[regime][column], estimate
+    ])
+  ));
+  table("transition", data.transition.flatMap((row, to) =>
+    row.map((estimate, from) => [
+      `R${from + 1} to R${to + 1}`, data.trueTransition[to][from], estimate
+    ])
+  ));
+  const errors = data.decoded.filter((state, i) => state !== data.trueState[i + 1]).length;
+  byId("metrics").replaceChildren(...["Log-likelihood", "RSS", "RCM", "Entropy", "Classification error"].map((name, i) => {
     const group = document.createElement("div");
     const term = document.createElement("dt");
     const value = document.createElement("dd");
     term.textContent = name;
-    value.textContent = data.metrics[i].toFixed(i === 3 ? 3 : 2);
+    value.textContent = i === 4 ? `${(100 * errors / data.decoded.length).toFixed(1)}%` : data.metrics[i].toFixed(i === 3 ? 3 : 2);
     group.append(term, value);
     return group;
   }));
@@ -79,7 +89,7 @@ function inspect() {
   } else {
     sampleStep = step;
     const probabilities = view === "filtered" ? data.filtered : data.smooth;
-    byId("values").textContent = `Observed ${data.y[step - 1].toFixed(2)} · P(Regime 1) ${probabilities[0][step - 2].toFixed(2)} · P(Regime 2) ${probabilities[1][step - 2].toFixed(2)}`;
+    byId("values").textContent = `Observed ${data.y[step - 1].toFixed(2)} \u00b7 True regime ${data.trueState[step - 1]} · P(Regime 1) ${probabilities[0][step - 2].toFixed(2)} · P(Regime 2) ${probabilities[1][step - 2].toFixed(2)}`;
   }
   draw();
 }
@@ -167,7 +177,7 @@ function draw() {
   ctx.stroke();
   ctx.setLineDash([]);
   ctx.fillStyle = "#555f69";
-  const ticks = forecasting ? [start, n - 32, n, n + 12, end] : [1, 50, 100, 150, n];
+  const ticks = forecasting ? [start, n - 32, n, n + 12, end] : Array.from({ length: 5 }, (_, i) => 1 + Math.round(i * (n - 1) / 4));
   ticks.forEach((tick, i) => {
     ctx.textAlign = i === 0 ? "left" : i === ticks.length - 1 ? "right" : "center";
     ctx.fillText(tick > n ? `+${tick - n}` : tick, x(tick), h - 14);
@@ -185,6 +195,46 @@ for (const group of ["model", "view"]) {
 }
 slider.addEventListener("input", inspect);
 new ResizeObserver(draw).observe(chart);
+
+const comparison = byId("comparison-chart");
+function drawComparison() {
+  const width = comparison.clientWidth;
+  const height = comparison.clientHeight;
+  if (!width || !height) return;
+  const ratio = window.devicePixelRatio || 1;
+  comparison.width = Math.round(width * ratio);
+  comparison.height = Math.round(height * ratio);
+  const context = comparison.getContext("2d");
+  context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  context.font = "13px system-ui";
+  const left = 65;
+  const right = width - 12;
+  const truth = demos.level.trueState.slice(1);
+  // The benchmark records a posterior-mode assignment of 159:0 after alignment.
+  const paths = [["True", truth], ["MSARM", demos.level.decoded], ["MSwM", truth.map(() => 1)]];
+  const unit = (right - left) / truth.length;
+  paths.forEach(([label, states], row) => {
+    const top = 14 + row * 32;
+    context.fillStyle = "#25282c";
+    context.fillText(label, 8, top + 14);
+    for (let start = 0; start < states.length;) {
+      let end = start + 1;
+      while (states[end] === states[start]) end++;
+      context.fillStyle = states[start] === 1 ? mint : orange;
+      context.fillRect(left + start * unit, top, (end - start) * unit, 19);
+      start = end;
+    }
+  });
+  context.fillStyle = "#555f69";
+  context.fillText("2", left, 122);
+  context.textAlign = "right";
+  context.fillText("160", right, 122);
+}
+new ResizeObserver(drawComparison).observe(comparison);
+byId("show-case").addEventListener("click", () => {
+  document.querySelector('[data-model="level"]').click();
+  document.querySelector('[data-view="smoothed"]').click();
+});
 byId("copy").addEventListener("click", async () => {
   const button = byId("copy");
   try {

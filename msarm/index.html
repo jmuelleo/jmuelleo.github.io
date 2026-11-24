@@ -15,7 +15,7 @@
 <div class="page">
 <header>
   <a class="site-name" href="../">Julian Müller</a>
-  <nav aria-label="Page navigation"><a href="#explore">Explorer</a><a href="#method">Method</a><a href="#reference">R reference</a></nav>
+  <nav aria-label="Page navigation"><a href="#explore">Explorer</a><a href="#benchmark">Benchmark</a><a href="#method">Method</a><a href="#reference">R reference</a></nav>
 </header>
 <main id="main">
   <section class="project-intro" aria-labelledby="title">
@@ -32,7 +32,7 @@
 
   <section id="explore" aria-labelledby="explore-title">
     <h2 id="explore-title">Regime explorer</h2>
-    <p class="intro">Compare three synthetic AR(1) series with two regimes. Each example was fitted with MSARM 1.0.1 in R. The browser displays the stored results.</p>
+    <p class="intro">These three simulated AR(1) series illustrate parameter recovery with MSARM 1.0.1. Each series follows a two-state Markov chain. The tables compare the generating parameters with estimates from R for the selected series.</p>
     <figure class="lab" aria-labelledby="chart-title">
       <div class="control-row">
         <fieldset><legend>Switching parameters</legend><div class="seg">
@@ -55,12 +55,36 @@
       </div>
       <noscript><p>Enable JavaScript to explore the fitted examples. The model and R reference are available below.</p></noscript>
       <div class="readouts">
-        <div><h3>Fitted parameters</h3><table><thead><tr><th scope="col">Regime</th><th scope="col">Intercept</th><th scope="col">AR(1)</th><th scope="col">Variance</th></tr></thead><tbody id="parameters"></tbody></table></div>
-        <div><h3>Transition probabilities</h3><table><thead><tr><th scope="col">To / from</th><th scope="col">Regime 1</th><th scope="col">Regime 2</th></tr></thead><tbody id="transition"></tbody></table></div>
+        <div><h3>Autoregression and innovations</h3><table><thead><tr><th scope="col">Regime / parameter</th><th scope="col">True</th><th scope="col">Estimated</th></tr></thead><tbody id="parameters"></tbody></table></div>
+        <div><h3>Transition probabilities</h3><table><thead><tr><th scope="col">From / to</th><th scope="col">True</th><th scope="col">Estimated</th></tr></thead><tbody id="transition"></tbody></table></div>
       </div>
       <dl id="metrics" class="metrics"></dl>
-      <figcaption class="note context">Regime numbers are arbitrary and can refer to different fitted states across examples.</figcaption>
+      <figcaption class="note context">Fitted labels are aligned to the simulated path by maximizing agreement of posterior-mode assignments. The likelihood, classification error and parameter estimates measure different aspects of recovery.</figcaption>
     </figure>
+  </section>
+
+  <section id="benchmark" aria-labelledby="benchmark-title">
+    <h2 id="benchmark-title">Regime recovery compared with MSwM</h2>
+    <p>MSARM 1.0.1 and MSwM 1.5 were fitted to the same 300 simulated series across 25 designs. Both received the generating AR order, number of regimes and switching mask, with five starts and a budget of 250 EM iterations per start. Each package retained its own initialization and convergence rules. A shared conditional Gaussian likelihood and smoother were used to evaluate the fits.</p>
+    <table class="benchmark-table">
+      <caption>Paired simulation results</caption>
+      <thead><tr><th scope="col">Outcome</th><th scope="col">MSARM</th><th scope="col">MSwM</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Failed regime recovery</th><td>78/300 (26.0%)</td><td>189/300 (63.0%)</td></tr>
+        <tr><th scope="row">No finite fit</th><td>0</td><td>4</td></tr>
+        <tr><th scope="row">Single-regime collapse</th><td>0</td><td>5</td></tr>
+        <tr><th scope="row">Median per-series classification error</th><td>3.1%</td><td>24.4%</td></tr>
+      </tbody>
+    </table>
+    <p class="context">A recovery failure is defined as no finite fit, more than 20% of time points misclassified, or zero recall for an observed regime. Classification error is measured after aligning fitted labels to the true labels. Single-regime collapse assigns every time point to the same regime on a series with multiple observed regimes.</p>
+    <h3>A finite fit that misses a regime</h3>
+    <p>In the selected intercept-switching series <code>clear/1</code>, the true intercepts are &minus;3 and +3. MSARM estimates &minus;2.94 and +2.81 and recovers the regime path at all 159 scored observations. The best MSwM fit estimates two similar intercepts (&minus;0.35 and &minus;0.45), assigns all 159 observations to one regime, and misses 32 observations (20.1%). Under the shared scoring rule, the log-likelihoods are &minus;196.11 and &minus;293.75, respectively. All five MSwM fits assigned every observation to a single regime in this series.</p>
+    <figure class="lab comparison">
+      <canvas id="comparison-chart" role="img" aria-label="Three regime paths over observations 2 to 160. MSARM matches the simulated path at all 159 observations. MSwM assigns all observations to regime 1 after label alignment."></canvas>
+      <figcaption class="context note">Posterior-mode regime assignments for the same series shown under <a href="#explore" id="show-case">Intercept</a> in the explorer. Blue denotes regime 1 and ochre denotes regime 2. The observed split was 127 to 32.</figcaption>
+    </figure>
+    <p>The difference is concentrated in particular designs. Both estimators passed all 16 original full-switching cases, and both struggled when the regimes strongly overlapped. The rates describe the tested designs and fitting budgets. In a supplemental audit, counting variance-floor degeneracy added two MSARM failures, bringing its total to 80/300 (26.7%).</p>
+    <p class="project-links"><a href="https://github.com/jmuelleo/MSARM/blob/msarm-1.0.1/benchmarks/STRESS300.md">Study design, diagnostics and reproduction</a></p>
   </section>
 
   <section id="method" aria-labelledby="method-title">

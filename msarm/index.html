@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore regime inference and forecasting with MSARM, an R package for Gaussian Markov-switching autoregressions.">
+  <title>MSARM · Markov-switching autoregressions in R</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="demo-data.js"></script>
+  <script defer src="explorer.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="wrap top">
+  <a class="wordmark" href="../">Julian Müller</a>
+  <nav aria-label="Page navigation"><a href="#explore">Explorer</a><a href="#method">Method</a><a href="#reference">R reference</a></nav>
+</header>
+<main id="main" class="wrap">
+  <section class="hero" aria-labelledby="title">
+    <div class="hero-copy">
+      <div class="eyebrow">R PACKAGE · 1.0.1</div>
+      <h1 id="title">MSARM<span>.</span></h1>
+      <p class="lead">Markov-switching autoregression</p>
+      <p>Fit time series whose level, dynamics or volatility change with a latent regime. Choose which parameters can switch, infer regime probabilities, and forecast with bootstrap prediction intervals.</p>
+      <div class="actions"><a class="button primary" href="#explore">Explore the model</a><a class="button" href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1">Source code</a></div>
+    </div>
+    <aside class="model-card" aria-label="Model equation">
+      <div class="eyebrow">GAUSSIAN SWITCHING AR</div>
+      <p class="equation">y<sub>t</sub> = c<sub>sₜ</sub> + Σ φ<sub>k,sₜ</sub> y<sub>t−k</sub> + σ<sub>sₜ</sub> ε<sub>t</sub></p>
+      <p>A hidden Markov chain determines the active regime. The intercept, each lag coefficient and the innovation variance can vary independently.</p>
+      <div class="key"><span>c</span> Level <span>φ</span> Dynamics <span>σ²</span> Variance</div>
+    </aside>
+  </section>
+
+  <section id="explore" aria-labelledby="explore-title">
+    <h2 id="explore-title">Regime explorer</h2>
+    <p class="intro">Compare three synthetic AR(1) series with two regimes. Each example was fitted with MSARM 1.0.1 in R. The browser displays the stored results.</p>
+    <div class="lab">
+      <div class="control-row">
+        <fieldset><legend>Switching parameters</legend><div class="seg">
+          <button type="button" data-model="level" aria-pressed="true">Intercept</button>
+          <button type="button" data-model="volatility" aria-pressed="false">Variance</button>
+          <button type="button" data-model="dynamics" aria-pressed="false">All parameters</button>
+        </div></fieldset>
+        <fieldset><legend>View</legend><div class="seg">
+          <button type="button" data-view="smoothed" aria-pressed="true">Smoothed</button>
+          <button type="button" data-view="filtered" aria-pressed="false">Filtered</button>
+          <button type="button" data-view="forecast" aria-pressed="false">Forecast</button>
+        </div></fieldset>
+      </div>
+      <div class="plot-head"><div><h3 id="chart-title">Series and inferred regimes</h3><p id="chart-description" role="status">Smoothed probabilities use the full observed series.</p></div><div id="legend" class="legend"></div></div>
+      <canvas id="chart" role="img" aria-labelledby="chart-title chart-description"><p>Chart output is summarized in the tables below.</p></canvas>
+      <div class="inspect">
+        <label for="inspect">Observation <output id="step">120</output></label>
+        <input type="range" id="inspect" min="2" max="200" value="120">
+        <span id="values"></span>
+      </div>
+      <noscript><p>Enable JavaScript to explore the fitted examples. The model and R reference are available below.</p></noscript>
+      <div class="readouts">
+        <div><h3>Fitted parameters</h3><table><thead><tr><th scope="col">Regime</th><th scope="col">Intercept</th><th scope="col">AR(1)</th><th scope="col">Variance</th></tr></thead><tbody id="parameters"></tbody></table></div>
+        <div><h3>Transition probabilities</h3><table><thead><tr><th scope="col">To / from</th><th scope="col">Regime 1</th><th scope="col">Regime 2</th></tr></thead><tbody id="transition"></tbody></table></div>
+      </div>
+      <dl id="metrics" class="metrics"></dl>
+      <p class="note">Regime numbers are arbitrary and can refer to different fitted states across examples.</p>
+    </div>
+  </section>
+
+  <section id="method" aria-labelledby="method-title">
+    <h2 id="method-title">From series to forecast</h2>
+    <div class="method">
+      <article><h3>Estimate with EM</h3><p>Specify the AR order, regime count and switching mask. EM alternates between estimating latent regime probabilities and updating the model parameters. Multiple random starts and a variance floor help with sensitivity to initialisation and near-degenerate variances.</p></article>
+      <article><h3>Infer states</h3><p>Filtering conditions on observations through the current time. Smoothing uses the entire sample. The fitted object returns smoothed probabilities and fitted values for the most probable smoothed regime.</p></article>
+      <article><h3>Forecast uncertainty</h3><p>Propagate regime probabilities and lag moments for point forecasts. The residual bootstrap simulates future regime transitions and resamples centred, standardised residuals along each path. Quantiles give pointwise prediction intervals.</p></article>
+    </div>
+  </section>
+
+  <section id="reference" aria-labelledby="reference-title">
+    <h2 id="reference-title">Use MSARM in R</h2>
+    <div class="reference">
+      <div class="code-wrap"><div class="code-head"><span>R · Simulate, fit, forecast</span><button type="button" id="copy">Copy code</button></div><pre><code id="r-code">library(MSARM)
+
+set.seed(12)
+y &lt;- arima.sim(list(ar = 0.5), n = 150)
+fit &lt;- MSARM.fit(y, K = 1, N = 2,
+                 Switcher = c(TRUE, FALSE, TRUE))
+pred &lt;- MSARM.predict(fit, n.ahead = 8,
+                      boot = TRUE, L = 1000)
+MSARM.plot(pred, conf = TRUE)</code></pre></div>
+      <dl class="api">
+        <dt><code>MSARM.fit()</code></dt><dd>Estimate transitions, regime coefficients and smoothed probabilities. Choose a start by log-likelihood, RSS, RCM or normalised entropy.</dd>
+        <dt><code>MSARM.predict()</code></dt><dd>Return point forecasts and future regime probabilities. Enable <code>boot</code> for the bootstrap mean and prediction quantiles.</dd>
+        <dt><code>MSARM.plot()</code></dt><dd>Plot the observed series and forecasts. Enable <code>conf</code> to display the bootstrap bands when available.</dd>
+      </dl>
+    </div>
+    <details><summary>Lower-level functions</summary>
+      <p><strong>Inference and likelihood.</strong> <code>eta_function</code> evaluates conditional densities. <code>zeta_Yt_function</code> calculates filtered and one-step predicted probabilities, <code>zeta_YT_function</code> smooths them, and <code>Log_Likelihood_function</code> evaluates the conditional log-likelihood.</p>
+      <p><strong>Initialisation and transitions.</strong> <code>alpha_0_function</code>, <code>P_0_function</code> and <code>zeta_1_0_function</code> initialise coefficients, transitions and regime weights. <code>P_ij_next_function</code> updates the transition matrix.</p>
+      <p><strong>Worked EM routines.</strong> The three case-specific EM routines expose the estimation steps behind different switching masks. The associated helpers update regression coefficients and, in Example 5, regime variances.</p>
+        <ul class="helper-list"><li><a href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1/man"><code>Example3_EM_Algorithm_function_lastbeta</code>, <code>Example4_EM_Algorithm_function_lastbeta</code>, <code>Example5_EM_Algorithm_function_lastbeta</code></a></li><li><code>Example3_alpha_next_function</code>, <code>Example4_alpha_next_function_lastbeta</code>, <code>Example5_alpha_next_function_lastbeta</code></li><li><code>Example4_Beta_F_function</code>, <code>Example5_Beta_F_function</code>, <code>Example5_sigma_function</code></li></ul>
+    </details>
+    <div class="resources"><a href="../assets/documents/msarm-bsc-thesis.pdf">BSc thesis and derivations (PDF)</a><a href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1/man">Full R reference</a><a href="https://github.com/jmuelleo/MSARM/blob/msarm-1.0.1/benchmarks/README.md">Reproducible MSwM comparison</a></div>
+  </section>
+</main>
+<footer class="wrap"><a href="../">Julian Müller</a><span>MSARM · Version 1.0.1 submitted to CRAN</span></footer>
+</body>
+</html>

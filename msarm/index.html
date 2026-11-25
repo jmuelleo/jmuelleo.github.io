@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Explore regime inference and forecasting with MSARM, an R package for Gaussian Markov-switching autoregressions.">
   <title>MSARM · Markov-switching autoregressions in R</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../assets/project.css">
   <link rel="stylesheet" href="style.css">
   <script defer src="demo-data.js"></script>
   <script defer src="explorer.js"></script>
@@ -15,19 +17,35 @@
 <div class="page">
 <header>
   <a class="site-name" href="../">Julian Müller</a>
-  <nav aria-label="Page navigation"><a href="../#projects">Projects</a><a href="#explore">Explorer</a><a href="#benchmark">Benchmark</a><a href="#method">Method</a><a href="#reference">R reference</a></nav>
+  <nav aria-label="Page navigation"><a href="../#projects">Projects</a><a href="#method">Method</a><a href="#explore">Explorer</a><a href="#benchmark">Benchmark</a><a href="#reference">R reference</a></nav>
 </header>
 <main id="main">
   <section class="project-intro" aria-labelledby="title">
-    <p class="context">BSc thesis &middot; University of Mannheim &middot; 2025</p>
-    <h1 id="title">MSARM: Markov-Switching Autoregressive Models</h1>
-    <p>MSARM fits Gaussian autoregressions for time series whose level, dynamics or volatility change with a latent regime. The package estimates regime probabilities and forecasts future observations with bootstrap prediction intervals.</p>
-    <p class="project-links"><a href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1">Source code</a><span aria-hidden="true"> &middot; </span><a href="../assets/documents/msarm-bsc-thesis.pdf">BSc thesis (PDF)</a><span aria-hidden="true"> &middot; </span><a href="https://github.com/jmuelleo/MSARM/blob/msarm-1.0.1/benchmarks/README.md">Benchmark</a></p>
-    <p class="context">Supervised by Dr. Ingo Steinke. The thesis derives the estimator and tests both packages across 288 simulated processes. The explorer and the later 300-series benchmark below use MSARM 1.0.1.</p>
+    <div>
+      <p class="context">BSc thesis &middot; University of Mannheim &middot; 2025</p>
+      <h1 id="title">MSARM</h1>
+      <p class="hero-field">Markov-switching autoregressions in R</p>
+      <p>When the level, volatility or dynamics of a time series change, the regime driving that change may be hidden. MSARM estimates the probability of each regime from the observed series and carries that uncertainty into forecasts.</p>
+      <p class="context">Supervised by Dr. Ingo Steinke, University of Mannheim.</p>
+      <div class="project-actions"><a class="primary" href="#explore">Explore the regimes</a><a href="../assets/documents/msarm-bsc-thesis.pdf">Thesis (PDF)</a><a href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1">Source code</a></div>
+    </div>
+    <figure class="project-figure regime-preview">
+      <img src="../assets/msarm-regimes.webp" width="1120" height="720" alt="A simulated time series and its fitted probability of being in the high-level regime">
+      <figcaption>Simulated intercept-switching series and smoothed probabilities fitted with MSARM 1.0.1.</figcaption>
+    </figure>
+  </section>
+
+  <section id="method" aria-labelledby="method-title">
+    <h2 id="method-title">From series to forecast</h2>
     <div class="model-card">
-      <h2>Model specification</h2>
+      <h3>Model specification</h3>
       <p class="equation">y<sub>t</sub> = c<sub>s<sub>t</sub></sub> + &sum; &phi;<sub>k,s<sub>t</sub></sub> y<sub>t&minus;k</sub> + &sigma;<sub>s<sub>t</sub></sub> &epsilon;<sub>t</sub></p>
       <p>A hidden Markov chain determines the active regime. The intercept <var>c</var>, each lag coefficient <var>&phi;</var> and the innovation variance <var>&sigma;&sup2;</var> can vary independently.</p>
+    </div>
+    <div class="method-grid">
+      <article><h3>Estimate with EM</h3><p>Specify the AR order, regime count and switching mask. EM alternates between estimating latent regime probabilities and updating the model parameters. Multiple random starts and a variance floor help with sensitivity to initialisation and near-degenerate variances.</p></article>
+      <article><h3>Infer states</h3><p>Filtering conditions on observations through the current time. Smoothing uses the entire sample. The fitted object returns smoothed probabilities and fitted values for the most probable smoothed regime.</p></article>
+      <article><h3>Forecast uncertainty</h3><p>Propagate regime probabilities and lag moments for point forecasts. The residual bootstrap simulates future regime transitions and resamples centred, standardised residuals along each path. Quantiles give pointwise prediction intervals.</p></article>
     </div>
   </section>
 
@@ -66,18 +84,21 @@
 
   <section id="benchmark" aria-labelledby="benchmark-title">
     <h2 id="benchmark-title">Regime recovery compared with MSwM</h2>
-    <p>MSARM 1.0.1 and MSwM 1.5 were fitted to the same 300 simulated series across 25 designs. Both received the generating AR order, number of regimes and switching mask, with five starts and a budget of 250 EM iterations per start. Each package retained its own initialization and convergence rules. A shared conditional Gaussian likelihood and smoother were used to evaluate the fits.</p>
-    <table class="benchmark-table">
-      <caption>Paired simulation results</caption>
-      <thead><tr><th scope="col">Outcome</th><th scope="col">MSARM</th><th scope="col">MSwM</th></tr></thead>
-      <tbody>
-        <tr><th scope="row">Failed regime recovery</th><td>78/300 (26.0%)</td><td>189/300 (63.0%)</td></tr>
-        <tr><th scope="row">No finite fit</th><td>0</td><td>4</td></tr>
-        <tr><th scope="row">Single-regime collapse</th><td>0</td><td>5</td></tr>
-        <tr><th scope="row">Median per-series classification error</th><td>3.1%</td><td>24.4%</td></tr>
-      </tbody>
-    </table>
-    <p class="context">A recovery failure is defined as no finite fit, more than 20% of time points misclassified, or zero recall for an observed regime. Classification error is measured after aligning fitted labels to the true labels. Single-regime collapse assigns every time point to the same regime on a series with multiple observed regimes.</p>
+    <p class="measure">The BSc thesis derives the estimator and compares the packages across 288 simulated processes. The follow-up benchmark uses MSARM 1.0.1.</p>
+    <p class="measure">MSARM 1.0.1 and MSwM 1.5 were fitted to the same 300 simulated series across 25 designs. Both received the generating AR order, number of regimes and switching mask, with five starts and a budget of 250 EM iterations per start. Each package retained its own initialization and convergence rules. A shared conditional Gaussian likelihood and smoother were used to evaluate the fits.</p>
+    <div class="results-wrap">
+      <table class="benchmark-table">
+        <caption>Paired simulation results</caption>
+        <thead><tr><th scope="col">Outcome</th><th scope="col">MSARM</th><th scope="col">MSwM</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Failed regime recovery</th><td>78/300 (26.0%)</td><td>189/300 (63.0%)</td></tr>
+          <tr><th scope="row">No finite fit</th><td>0</td><td>4</td></tr>
+          <tr><th scope="row">Single-regime collapse</th><td>0</td><td>5</td></tr>
+          <tr><th scope="row">Median per-series classification error</th><td>3.1%</td><td>24.4%</td></tr>
+        </tbody>
+      </table>
+      <p class="context">A recovery failure is defined as no finite fit, more than 20% of time points misclassified, or zero recall for an observed regime. Classification error is measured after aligning fitted labels to the true labels. Single-regime collapse assigns every time point to the same regime on a series with multiple observed regimes.</p>
+    </div>
     <h3>A finite fit that misses a regime</h3>
     <p>In the selected intercept-switching series <code>clear/1</code>, the true intercepts are &minus;3 and +3. MSARM estimates &minus;2.94 and +2.81 and recovers the regime path at all 159 scored observations. The best MSwM fit estimates two similar intercepts (&minus;0.35 and &minus;0.45), assigns all 159 observations to one regime, and misses 32 observations (20.1%). Under the shared scoring rule, the log-likelihoods are &minus;196.11 and &minus;293.75, respectively. All five MSwM fits assigned every observation to a single regime in this series.</p>
     <figure class="lab comparison">
@@ -86,15 +107,6 @@
     </figure>
     <p>The difference is concentrated in particular designs. Both estimators passed all 16 original full-switching cases, and both struggled when the regimes strongly overlapped. The rates describe the tested designs and fitting budgets. In a supplemental audit, counting variance-floor degeneracy added two MSARM failures, bringing its total to 80/300 (26.7%).</p>
     <p class="project-links"><a href="https://github.com/jmuelleo/MSARM/blob/msarm-1.0.1/benchmarks/STRESS300.md">Study design, diagnostics and reproduction</a></p>
-  </section>
-
-  <section id="method" aria-labelledby="method-title">
-    <h2 id="method-title">From series to forecast</h2>
-    <div class="method">
-      <article><h3>Estimate with EM</h3><p>Specify the AR order, regime count and switching mask. EM alternates between estimating latent regime probabilities and updating the model parameters. Multiple random starts and a variance floor help with sensitivity to initialisation and near-degenerate variances.</p></article>
-      <article><h3>Infer states</h3><p>Filtering conditions on observations through the current time. Smoothing uses the entire sample. The fitted object returns smoothed probabilities and fitted values for the most probable smoothed regime.</p></article>
-      <article><h3>Forecast uncertainty</h3><p>Propagate regime probabilities and lag moments for point forecasts. The residual bootstrap simulates future regime transitions and resamples centred, standardised residuals along each path. Quantiles give pointwise prediction intervals.</p></article>
-    </div>
   </section>
 
   <section id="reference" aria-labelledby="reference-title">
@@ -124,7 +136,7 @@ MSARM.plot(pred, conf = TRUE)</code></pre></div>
     <div class="resources"><a href="../assets/documents/msarm-bsc-thesis.pdf">BSc thesis and derivations (PDF)</a><a href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1/man">Full R reference</a><a href="https://github.com/jmuelleo/MSARM/blob/msarm-1.0.1/benchmarks/README.md">Reproducible MSwM comparison</a></div>
   </section>
 </main>
-<footer><a href="../">Julian Müller</a><span>MSARM · Version 1.0.1 submitted to CRAN</span></footer>
+<footer><a href="../#projects">All projects</a><span aria-hidden="true"> &middot; </span>MSARM &middot; Version 1.0.1 submitted to CRAN</footer>
 </div>
 </body>
 </html>

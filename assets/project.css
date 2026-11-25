@@ -1,0 +1,18 @@
+.project-intro { display: grid; grid-template-columns: 1.08fr 1fr; align-items: center; gap: clamp(20px, 5vw, 60px); }
+.project-intro .context { margin-bottom: .7em; }
+.project-figure { margin: 0; background: #edf1ed; padding: clamp(12px, 2.5vw, 22px); border-radius: 10px; }
+.project-figure img { display: block; width: 100%; height: auto; margin-bottom: 12px; border-radius: 5px; }
+.measure { max-width: 75ch; }
+.method-grid, .demo-grid { display: grid; gap: 14px; }
+.method-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.demo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.method-grid article, .demo-grid article, .results-wrap { background: white; border: 1px solid var(--line); border-radius: 10px; padding: clamp(14px, 2.7vw, 25px); }
+.method-grid p, .demo-grid p, .results-wrap p { margin-bottom: 0; }
+.results-wrap { margin: 18px 0; }
+@media (max-width: 760px) {
+  .project-intro, .method-grid { grid-template-columns: 1fr; }
+  .project-figure { max-width: 520px; }
+}
+@media (max-width: 480px) {
+  .demo-grid { grid-template-columns: 1fr; }
+}

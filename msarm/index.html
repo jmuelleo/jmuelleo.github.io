@@ -15,14 +15,15 @@
 <div class="page">
 <header>
   <a class="site-name" href="../">Julian Müller</a>
-  <nav aria-label="Page navigation"><a href="#explore">Explorer</a><a href="#benchmark">Benchmark</a><a href="#method">Method</a><a href="#reference">R reference</a></nav>
+  <nav aria-label="Page navigation"><a href="../#projects">Projects</a><a href="#explore">Explorer</a><a href="#benchmark">Benchmark</a><a href="#method">Method</a><a href="#reference">R reference</a></nav>
 </header>
 <main id="main">
   <section class="project-intro" aria-labelledby="title">
-    <p class="context">Research software &middot; R package &middot; Version 1.0.1</p>
+    <p class="context">BSc thesis &middot; University of Mannheim &middot; 2025</p>
     <h1 id="title">MSARM: Markov-Switching Autoregressive Models</h1>
     <p>MSARM fits Gaussian autoregressions for time series whose level, dynamics or volatility change with a latent regime. The package estimates regime probabilities and forecasts future observations with bootstrap prediction intervals.</p>
     <p class="project-links"><a href="https://github.com/jmuelleo/MSARM/tree/msarm-1.0.1">Source code</a><span aria-hidden="true"> &middot; </span><a href="../assets/documents/msarm-bsc-thesis.pdf">BSc thesis (PDF)</a><span aria-hidden="true"> &middot; </span><a href="https://github.com/jmuelleo/MSARM/blob/msarm-1.0.1/benchmarks/README.md">Benchmark</a></p>
+    <p class="context">Supervised by Dr. Ingo Steinke. The thesis derives the estimator and tests both packages across 288 simulated processes. The explorer and the later 300-series benchmark below use MSARM 1.0.1.</p>
     <div class="model-card">
       <h2>Model specification</h2>
       <p class="equation">y<sub>t</sub> = c<sub>s<sub>t</sub></sub> + &sum; &phi;<sub>k,s<sub>t</sub></sub> y<sub>t&minus;k</sub> + &sigma;<sub>s<sub>t</sub></sub> &epsilon;<sub>t</sub></p>

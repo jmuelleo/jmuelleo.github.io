@@ -1,0 +1,75 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SigmaFlow | Julian M&uuml;ller</title>
+  <meta name="description" content="Riemannian flow matching for molecular docking. Explore generated binding modes, sampling trajectories and compute-matched results from the SigmaFlow dissertation.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page">
+    <header>
+      <a class="site-name" href="../">Julian M&uuml;ller</a>
+      <nav aria-label="Page navigation"><a href="../#projects">Projects</a><a href="#method">Method</a><a href="#results">Results</a><a href="#explore">Explore</a></nav>
+    </header>
+    <main id="main">
+      <section class="project-intro" aria-labelledby="title">
+        <div>
+          <p class="context">MSc dissertation &middot; University of Oxford &middot; 2026</p>
+          <h1 id="title">SigmaFlow</h1>
+          <p class="hero-field">Riemannian flow matching for generative protein&ndash;ligand docking</p>
+          <p>Docking predicts how a small molecule fits into a protein pocket. A model can generate plausible poses that differ substantially in orientation and shape. With a fixed inference budget, should it spend more computation on each pose or generate more candidates?</p>
+          <p class="context">Supervised by Prof. Garrett M. Morris, Oxford Protein Informatics Group.</p>
+          <div class="project-actions"><a class="primary" href="#explore">Explore the poses</a><a href="../assets/documents/sigmaflow-msc-thesis.pdf">Dissertation (PDF)</a><a href="https://github.com/jmuelleo/SigmaFlow">Source code</a></div>
+        </div>
+        <figure class="pose-figure">
+          <img src="../assets/sigmaflow-modes.webp" width="1098" height="794" alt="SigmaFlow-NE candidates for 7PIH_7QW grouped into seven clusters around the blue crystallographic reference pose">
+          <figcaption>Forty SigmaFlow-NE candidates for 7PIH_7QW, grouped into seven binding modes. The blue pose is the crystallographic reference. MSc thesis, Fig. 7.2b.</figcaption>
+        </figure>
+      </section>
+
+      <section id="method" aria-labelledby="method-title">
+        <h2 id="method-title">Learning to move rigid fragments</h2>
+        <div class="method-grid">
+          <article><h3>Represent the ligand</h3><p>Split the ligand into rigid fragments. Each fragment has a translation and a rotation. The protein pocket conditions the model.</p></article>
+          <article><h3>Learn a velocity field</h3><p>Train on straight paths for translations and geodesics for rotations. SigmaFlow-NE retains the Newton&ndash;Euler readout. SigmaFlow-TR predicts translation and rotation with separate heads.</p></article>
+          <article><h3>Generate and rank poses</h3><p>Integrate the learned field from random initial fragment poses. Repeat to create a candidate pool, then rank the assembled poses with SigmaDock&rsquo;s mixed score.</p></article>
+        </div>
+      </section>
+
+      <section id="results" aria-labelledby="results-title">
+        <h2 id="results-title">More candidates at the same compute budget</h2>
+        <p class="measure">Each strategy uses 1,000 network evaluations per complex. Top-1 success requires the top-ranked pose to have a symmetry-corrected RMSD below 2 &Aring; and pass all PoseBusters validity checks.</p>
+        <div class="results-wrap">
+          <table>
+            <caption>Top-1 docking success in the MSc dissertation</caption>
+            <thead><tr><th scope="col">Benchmark</th><th scope="col">Model</th><th scope="col">40 poses &times; 25 steps</th><th scope="col">200 poses &times; 5 steps</th></tr></thead>
+            <tbody>
+              <tr><td>PoseBusters</td><th scope="row">SigmaFlow-NE</th><td>68.1%</td><td><strong>72.3%</strong></td></tr>
+              <tr><td>PoseBusters</td><th scope="row">SigmaFlow-TR</th><td>65.2%</td><td><strong>70.4%</strong></td></tr>
+              <tr><td>Astex</td><th scope="row">SigmaFlow-NE</th><td>81.2%</td><td><strong>87.1%</strong></td></tr>
+              <tr><td>Astex</td><th scope="row">SigmaFlow-TR</th><td>82.4%</td><td><strong>92.9%</strong></td></tr>
+            </tbody>
+          </table>
+          <p class="context">PoseBusters uses a temporal split. The Astex set includes 47 of 85 complexes that occur in PDBbind v2020 training data.</p>
+        </div>
+        <p class="measure">At 40 poses and 25 steps, the reproduced SigmaDock diffusion baseline reached 64.5% on PoseBusters and 74.1% on Astex.</p>
+        <p class="measure">More draws helped cover distinct binding modes. In the thesis analysis, an oracle that selected a mode containing a valid, near-native pose lifted Top-1 success by 10&ndash;13 percentage points. That is an estimate of the room for better mode selection.</p>
+      </section>
+
+      <section id="explore" aria-labelledby="explore-title">
+        <h2 id="explore-title">Explore model output in 3D</h2>
+        <div class="demo-grid">
+          <article><h3><a href="modes/">Pose mode explorer</a></h3><p>Compare the three models across ten test complexes. Change the clustering threshold and isolate competing modes to see where the generated poses concentrate.</p></article>
+          <article><h3><a href="trajectories/">Sampling trajectories</a></h3><p>Follow a generated ATP pose for PDB entry 7KRU from its initial draw through integration. Compare the paths taken by diffusion and flow matching.</p></article>
+        </div>
+      </section>
+    </main>
+    <footer><a href="../#projects">All projects</a><span aria-hidden="true"> &middot; </span>Julian M&uuml;ller</footer>
+  </div>
+</body>
+</html>

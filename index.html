@@ -41,8 +41,13 @@
 
         <article id="sigmaflow" class="project">
           <figure class="project-preview pose-preview">
-            <a href="sigmaflow/"><img src="assets/sigmaflow-modes.webp" width="1098" height="794" alt="Overlaid ligand poses grouped into seven binding modes"></a>
-            <figcaption>Generated binding modes for 7PIH_7QW &middot; MSc thesis, Fig. 7.2b</figcaption>
+            <video id="sigmaflow-preview" controls muted playsinline preload="none"
+                   poster="assets/sigmaflow-trajectory.webp" width="1000" height="724"
+                   aria-label="Recorded SigmaFlow trajectory showing five rigid fragments assembling into an ATP pose">
+              <source src="assets/sigmaflow-trajectory.mp4" type="video/mp4">
+              <a href="assets/sigmaflow-trajectory.mp4">Download the SigmaFlow preview</a>
+            </video>
+            <figcaption>SigmaFlow-NE moves five ATP fragments over 25 integration steps. Faint blue shows the crystallographic pose. <a href="sigmaflow/trajectories/">Explore the trajectory in 3D</a>.</figcaption>
           </figure>
           <div class="project-copy">
             <p class="context">Oxford MSc dissertation &middot; 2026</p>
@@ -103,5 +108,16 @@
     </main>
     <footer>Julian Müller <span aria-hidden="true">·</span> Updated November 2026</footer>
   </div>
+  <script>
+    const preview = document.getElementById("sigmaflow-preview");
+    if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const observer = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        preview.play().catch(() => {});
+      }, { threshold: 0.6 });
+      observer.observe(preview);
+    }
+  </script>
 </body>
 </html>

@@ -35,7 +35,9 @@ jobs:
           for attempt in {1..12}; do
             if gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages" \
               --jq '.artifacts | length' | grep -q '^[1-9]'; then
-              exit 0
+              # Pages can lag behind the Actions artifact listing.
+            sleep 20
+            exit 0
             fi
             sleep 5
           done
@@ -43,4 +45,4 @@ jobs:
           exit 1
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5.0.1

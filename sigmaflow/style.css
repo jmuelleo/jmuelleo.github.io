@@ -6,3 +6,4 @@ td:last-child, th:last-child { background: #edf5ef; }
   td, th { font-size: .875rem; padding: 6px 4px; }
 }
 .demo-grid video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #101b26; border-radius: 6px; margin: 10px 0 12px; }
+.docking-preview { display: block; width: 100%; height: auto; margin-bottom: 12px; border-radius: 5px; }

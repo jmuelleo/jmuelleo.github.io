@@ -3,88 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SigmaFlow | Julian M&uuml;ller</title>
-  <meta name="description" content="Riemannian flow matching for molecular docking. Explore generated binding modes, sampling trajectories and compute-matched results from the SigmaFlow dissertation.">
+  <meta name="description" content="Explore the interactive SigmaFlow project website or read the thesis.">
+  <title>SigmaFlow | Julian Müller</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="../assets/project.css">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    .sigmaflow-entry { max-width: 760px; margin: 0 auto; }
+    .sigmaflow-entry h1 { margin: 0 0 8px; font-size: clamp(2.5rem, 8vw, 4.5rem); }
+    .sigmaflow-intro { margin-bottom: 26px; font-size: 1.15rem; }
+    .sigmaflow-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .sigmaflow-card { display: flex; flex-direction: column; justify-content: end; gap: 8px; min-height: 170px; padding: 22px; border: 1px solid #b1c8dc; border-radius: 16px; background: #edf5fb; color: #173f64; text-decoration: none; }
+    .sigmaflow-card + .sigmaflow-card { border-color: #c7b9d7; background: #f5eff9; color: #50376a; }
+    .sigmaflow-card strong { font-size: 1.25rem; }
+    .sigmaflow-card:hover, .sigmaflow-card:focus-visible { border-color: currentColor; text-decoration: none; }
+    .sigmaflow-card:hover strong, .sigmaflow-card:focus-visible strong { text-decoration: underline; }
+    @media (max-width: 560px) { .sigmaflow-options { grid-template-columns: 1fr; } .sigmaflow-card { min-height: 120px; } }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="page">
     <header>
-      <a class="site-name" href="../">Julian M&uuml;ller</a>
-      <nav aria-label="Page navigation"><a href="../#projects">Projects</a><a href="#method">Method</a><a href="#results">Results</a><a href="#explore">Explore</a></nav>
+      <a class="site-name" href="../">Julian Müller</a>
+      <nav aria-label="Page navigation"><a href="../#projects">All projects</a></nav>
     </header>
-    <main id="main">
-      <section class="project-intro" aria-labelledby="title">
-        <div>
-          <p class="context">MSc dissertation &middot; University of Oxford &middot; 2026</p>
-          <h1 id="title">SigmaFlow</h1>
-          <p class="hero-field">Riemannian flow matching for generative protein&ndash;ligand docking</p>
-          <p>Docking predicts how a small molecule fits into a protein pocket. A model can generate plausible poses that differ substantially in orientation and shape. With a fixed inference budget, should it spend more computation on each pose or generate more candidates?</p>
-          <p class="context">Supervised by Prof. Garrett M. Morris, Oxford Protein Informatics Group.</p>
-          <div class="project-actions"><a class="primary" href="#explore">Explore the poses</a><a href="../assets/documents/sigmaflow-msc-thesis.pdf">Dissertation (PDF)</a><a href="https://github.com/jmuelleo/SigmaFlow">Source code</a></div>
-        </div>
-        <figure class="project-figure">
-          <video class="docking-preview" autoplay muted loop playsinline controls width="1280" height="928" poster="docking-7nfb-orbit-hd.webp" aria-label="SigmaFlow-TR docks GEN into the 7NFB binding pocket, with a camera orbit during sampling">
-            <source src="docking-7nfb-orbit-hd.mp4" type="video/mp4">
-          </video>
-          <figcaption>Watch SigmaFlow-TR position GEN in the 7NFB binding pocket, as the camera circles the complex. After 25 sampling steps, the symmetry-corrected RMSD to the crystallographic pose in pale blue is 0.46 &Aring;.</figcaption>
-        </figure>
-      </section>
-
-      <section id="method" aria-labelledby="method-title">
-        <h2 id="method-title">Learning to move rigid fragments</h2>
-        <div class="method-grid">
-          <article><h3>Represent the ligand</h3><p>Split the ligand into rigid fragments. Each fragment has a translation and a rotation. The protein pocket conditions the model.</p></article>
-          <article><h3>Learn a velocity field</h3><p>Train on straight paths for translations and geodesics for rotations. SigmaFlow-NE retains the Newton&ndash;Euler readout. SigmaFlow-TR predicts translation and rotation with separate heads.</p></article>
-          <article><h3>Generate and rank poses</h3><p>Integrate the learned field from random initial fragment poses. Repeat to create a candidate pool, then rank the assembled poses with SigmaDock&rsquo;s mixed score.</p></article>
-        </div>
-      </section>
-
-      <section id="results" aria-labelledby="results-title">
-        <h2 id="results-title">More candidates at the same compute budget</h2>
-        <p class="measure">Each strategy uses 1,000 network evaluations per complex. Top-1 success requires the top-ranked pose to have a symmetry-corrected RMSD below 2 &Aring; and pass all PoseBusters validity checks.</p>
-        <div class="results-wrap">
-          <table>
-            <caption>Top-1 docking success in the MSc dissertation</caption>
-            <thead><tr><th scope="col">Benchmark</th><th scope="col">Model</th><th scope="col">40 poses &times; 25 steps</th><th scope="col">200 poses &times; 5 steps</th></tr></thead>
-            <tbody>
-              <tr><td>PoseBusters</td><th scope="row">SigmaFlow-NE</th><td>68.1%</td><td><strong>72.3%</strong></td></tr>
-              <tr><td>PoseBusters</td><th scope="row">SigmaFlow-TR</th><td>65.2%</td><td><strong>70.4%</strong></td></tr>
-              <tr><td>Astex</td><th scope="row">SigmaFlow-NE</th><td>81.2%</td><td><strong>87.1%</strong></td></tr>
-              <tr><td>Astex</td><th scope="row">SigmaFlow-TR</th><td>82.4%</td><td><strong>92.9%</strong></td></tr>
-            </tbody>
-          </table>
-          <p class="context">PoseBusters uses a temporal split. The Astex set includes 47 of 85 complexes that occur in PDBbind v2020 training data.</p>
-        </div>
-        <p class="measure">At 40 poses and 25 steps, the reproduced SigmaDock diffusion baseline reached 64.5% on PoseBusters and 74.1% on Astex.</p>
-        <p class="measure">More draws helped cover distinct binding modes. In the thesis analysis, an oracle that selected a mode containing a valid, near-native pose lifted Top-1 success by 10&ndash;13 percentage points. That is an estimate of the room for better mode selection.</p>
-      </section>
-
-      <section id="explore" aria-labelledby="explore-title">
-        <h2 id="explore-title">Explore model output in 3D</h2>
-        <div class="demo-grid">
-          <article>
-            <h3><a href="modes/">Pose mode explorer</a></h3>
-            <video autoplay muted loop playsinline controls width="720" height="406" poster="modes-preview.webp" aria-label="SigmaFlow-Minimal poses for 7PIH, shown together and then isolated by binding mode">
-              <source src="modes-preview.mp4" type="video/mp4">
-            </video>
-            <p>Each color marks a cluster of similar poses. The preview isolates two competing modes while keeping the crystallographic reference in blue. Open the explorer to compare models and change the clustering threshold.</p>
-          </article>
-          <article>
-            <h3><a href="trajectories/">Sampling trajectories</a></h3>
-            <video autoplay muted loop playsinline controls width="1000" height="724" poster="../assets/sigmaflow-trajectory.webp" aria-label="Sampling trajectory of an ATP pose for PDB entry 7KRU">
-              <source src="../assets/sigmaflow-trajectory.mp4" type="video/mp4">
-            </video>
-            <p>Watch an ATP pose for PDB entry 7KRU move from its initial draw through successive sampling steps. Open the viewer to compare diffusion and flow matching step by step.</p>
-          </article>
-        </div>
-      </section>
+    <main id="main" class="sigmaflow-entry">
+      <p class="context">University of Oxford · 2026</p>
+      <h1>SigmaFlow</h1>
+      <p class="sigmaflow-intro">Riemannian flow matching for molecular docking</p>
+      <div class="sigmaflow-options">
+        <a class="sigmaflow-card" href="project.html">
+          <strong>Project Website</strong>
+          <span>Explore binding modes, sampling trajectories and benchmark results.</span>
+        </a>
+        <a class="sigmaflow-card" href="../assets/documents/sigmaflow-msc-thesis.pdf">
+          <strong>Thesis (PDF)</strong>
+          <span>Read the full master’s dissertation, including the method and experiments.</span>
+        </a>
+      </div>
     </main>
-    <footer><a href="../#projects">All projects</a><span aria-hidden="true"> &middot; </span>Julian M&uuml;ller</footer>
   </div>
 </body>
 </html>

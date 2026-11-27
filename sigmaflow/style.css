@@ -5,3 +5,4 @@ td:last-child, th:last-child { background: #edf5ef; }
 @media (max-width: 480px) {
   td, th { font-size: .875rem; padding: 6px 4px; }
 }
+.demo-grid video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #101b26; border-radius: 6px; margin: 10px 0 12px; }
